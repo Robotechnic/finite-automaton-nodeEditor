@@ -7,13 +7,22 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "check": "svelte-check --tsconfig ./tsconfig.json"
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "format": "prettier --write ./src/**/*.{ts,svelte,scss}",
+    "lint": "eslint ./src/**/*.{ts,svelte}",
+    "lint:fix": "eslint ./src/**/*.{ts,svelte} --fix"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^2.0.2",
     "@tsconfig/svelte": "^3.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.55.0",
+    "@typescript-eslint/parser": "^5.55.0",
+    "eslint-plugin-svelte3": "^4.0.0",
+    "pretier": "^0.0.1",
+    "prettier-plugin-svelte": "^2.9.0",
     "svelte": "^3.55.1",
     "svelte-check": "^2.10.3",
+    "svelte-preprocess": "^5.0.1",
     "tslib": "^2.5.0",
     "typescript": "^4.9.3",
     "vite": "^4.1.0"
