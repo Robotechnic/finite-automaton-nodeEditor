@@ -13,7 +13,7 @@ export class Connection {
 	private startNode: node
 	private endNode: node
 
-	private endConnector : Connector
+	private endConnector: Connector
 
 	static connectorRadius = 10
 
@@ -21,6 +21,7 @@ export class Connection {
 	constructor(startNode: node, endNode: node, display: boolean = null) {
 		this.startNode = startNode
 		this.endNode = endNode
+		this.endConnector = null
 		this._display.set(display ?? (startNode !== null && endNode !== null))
 		this._startPos = writable({ x: 0, y: 0 })
 		this._endPos = writable({ x: 0, y: 0 })
@@ -130,16 +131,16 @@ export class Connection {
 		if (!this.initialised()) return null
 		const pos = { x: 0, y: 0 }
 		if (this.startPoint.x < this.endPoint.x) {
-			pos.x = -this.getWidth() + Connection.connectorRadius * 2
+			pos.x = -this.getWidth()
 		}
 		if (this.startPoint.y < this.endPoint.y) {
-			pos.y = -this.getHeight() + Connection.connectorRadius * 2
+			pos.y = -this.getHeight()
 		}
 		return {
 			x: pos.x,
 			y: pos.y,
-			width: Math.max(this.getWidth() + Connection.connectorRadius * 2),
-			height: Math.max(this.getHeight(), Connection.connectorRadius * 2)
+			width: Math.max(this.getWidth(), 0) + Connection.connectorRadius * 2,
+			height: Math.max(this.getHeight(), 0) + Connection.connectorRadius * 2
 		}
 	}
 
@@ -157,25 +158,54 @@ export class Connection {
 		if (!this.initialised()) return ""
 		const start = { x: Connection.connectorRadius, y: Connection.connectorRadius }
 		if (this.startPoint.x < this.endPoint.x) {
-			start.x = this.getWidth() - Connection.connectorRadius
+			start.x = this.getWidth() + Connection.connectorRadius
 		}
 		if (this.startPoint.y < this.endPoint.y) {
-			start.y = this.getHeight() - Connection.connectorRadius
+			start.y = this.getHeight() + Connection.connectorRadius
 		}
 
 		const end = { x: Connection.connectorRadius, y: Connection.connectorRadius }
 		if (this.startPoint.x > this.endPoint.x) {
-			end.x = this.getWidth() - Connection.connectorRadius
+			end.x = this.getWidth() + Connection.connectorRadius
 		}
 
 		if (this.startPoint.y > this.endPoint.y) {
-			end.y = this.getHeight() - Connection.connectorRadius
+			end.y = this.getHeight() + Connection.connectorRadius
+		}
+
+
+		const diffX = Math.abs(end.x - start.x)
+
+		const controlPoint1 = {
+			x: start.x + diffX * 0.5,
+			y: start.y
+		}
+		
+		const controlPoint2 = {
+			x: end.x - diffX * 0.5, 
+			y: end.y
+		}
+		
+		const controlPoint3 = {
+			x: end.x,
+			y: end.y
+		}
+
+		const controlPoint4 = {
+			x: start.x + diffX * 0.1,
+			y: start.y
 		}
 
 		return `
-			M ${start.x} ${start.y}
-			L ${end.x} ${end.y}
+			M ${start.x} ${start.y} 
+			C ${controlPoint1.x} ${controlPoint1.y}, 
+			  ${controlPoint2.x} ${controlPoint2.y},
+			  ${controlPoint3.x} ${controlPoint3.y},
+			  ${controlPoint4.x} ${controlPoint4.y},
+			  ${end.x} ${end.y}
 		`
+
+
 	}
 
 	getSvgPath() {

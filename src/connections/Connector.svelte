@@ -72,6 +72,7 @@
 		} else {
 			$currentConnection = connection[1]
 			$currentConnection.setStartNode(parentNode)
+			$currentConnection.setEndNode(null, self)
 			console.log("Init right connection", pos)
 		}
 		$currentConnection.display = true

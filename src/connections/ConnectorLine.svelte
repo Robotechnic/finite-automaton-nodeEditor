@@ -31,9 +31,9 @@
 	svg {
 		position: absolute;
 		pointer-events: none;
+		overflow: visible !important;
 		top: var(--y);
 		left: var(--x);
-		z-index: 99;
-		border: dashed 1px red;
+		z-index: -1;
 	}
 </style>
