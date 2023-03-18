@@ -1,7 +1,7 @@
 import { writable, get } from "svelte/store"
-import type { node } from "./types"
+import type { node } from "../utils/types"
 
-function createStateStore () {
+function createStateStore() {
 	const baseStore = writable<node[]>([])
 	const { subscribe, set, update } = baseStore
 
@@ -25,18 +25,22 @@ function createStateStore () {
 			})
 			return created
 		},
-		deleteState(name: string) {
+		deleteStateByName(name: string) {
 			update(nodes => {
 				return nodes.filter(node => node.name !== name)
 			})
-		}
+		},
+		deleteState(node: node) {
+			update(nodes => {
+				return nodes.filter(n => n !== node)
+			})
+		},
 	}
 }
 
 type StateUpdater = {
-	isActive : () => boolean,
-	newMousePos : (x : number, y : number) => void
+	isActive: () => boolean
+	newMousePos: (x: number, y: number) => void
 }
-
 export const activeState = writable<StateUpdater>(null)
 export const nodeStore = createStateStore()
