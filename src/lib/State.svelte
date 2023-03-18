@@ -6,6 +6,7 @@
 	import Connector from "../connections/Connector.svelte"
 	import { Connection } from "../connections/connection"
 	import { currentConnection } from "../stores/connectionStore"
+	import ConnectorLine from "../connections/ConnectorLine.svelte"
 
 	let moovableElement: Moovable | null = null
 	let inputConnector: Connector | null = null
@@ -56,7 +57,9 @@
 	}
 
 	function deleteEvent(i: number) {
-		value.events = value.events.splice(i, 1)
+		value.events[i][1].setEndNode(null, null)
+		// delete the i-th event wihout breaking references of the i+n-th events
+		value.events = value.events.slice(0, i).concat(value.events.slice(i + 1));
 	}
 </script>
 
@@ -139,6 +142,13 @@
 		</div>
 	</div>
 </Moovable>
+<svg>
+	{#each value.events as event}
+		<ConnectorLine
+			connection={event[1]}
+		/>
+	{/each}
+</svg>
 
 <style lang="scss">
 	@mixin disableUserInteraction {
@@ -148,6 +158,14 @@
 
 	input.invalid {
 		border: 1px solid red;
+	}
+
+	svg {
+		position: absolute;
+		width:0;
+		height:0;
+		top:-80px;
+		overflow: visible !important;
 	}
 
 	.node {

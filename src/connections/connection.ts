@@ -7,7 +7,6 @@ export class Connection {
 	private _startPos: Writable<point>
 	private _endPos: Writable<point>
 	private _display = writable<boolean>(true)
-	private _svgBounds: Writable<{ x: number; y: number; width: number; height: number }>
 	private _svgPath: Writable<string>
 
 	private startNode: node
@@ -25,7 +24,6 @@ export class Connection {
 		this._display.set(display ?? (startNode !== null && endNode !== null))
 		this._startPos = writable({ x: 0, y: 0 })
 		this._endPos = writable({ x: 0, y: 0 })
-		this._svgBounds = writable(this.generateSvgBounds())
 		this._svgPath = writable(this.generateSvgPath())
 	}
 
@@ -92,7 +90,6 @@ export class Connection {
 	set startPoint(pos: point) {
 		if (!this.display) return
 		this._startPos.set(pos)
-		this._svgBounds.set(this.generateSvgBounds())
 		this._svgPath.set(this.generateSvgPath())
 	}
 
@@ -103,7 +100,6 @@ export class Connection {
 	set endPoint(pos: point) {
 		if (!this.display) return
 		this._endPos.set(pos)
-		this._svgBounds.set(this.generateSvgBounds())
 		this._svgPath.set(this.generateSvgPath())
 	}
 
@@ -112,41 +108,10 @@ export class Connection {
 	}
 
 	set display(display: boolean) {
+		console.log("display", display)
 		this._display.set(display)
 	}
 
-	private getHeight() {
-		return Math.abs(this.startPoint.y - this.endPoint.y)
-	}
-
-	private getWidth() {
-		return Math.abs(this.startPoint.x - this.endPoint.x)
-	}
-
-	/**
-	 * compute the bounding box of the connection
-	 * @returns {object} The bounding box of the connection with margins
-	 */
-	generateSvgBounds() {
-		if (!this.initialised()) return null
-		const pos = { x: 0, y: 0 }
-		if (this.startPoint.x < this.endPoint.x) {
-			pos.x = -this.getWidth()
-		}
-		if (this.startPoint.y < this.endPoint.y) {
-			pos.y = -this.getHeight()
-		}
-		return {
-			x: pos.x,
-			y: pos.y,
-			width: Math.max(this.getWidth(), 0) + Connection.connectorRadius * 2,
-			height: Math.max(this.getHeight(), 0) + Connection.connectorRadius * 2
-		}
-	}
-
-	getSvgBounds() {
-		return this._svgBounds
-	}
 
 	/**
 	 * Generate an SVG path in the form of a curve between the start and end point
@@ -156,56 +121,37 @@ export class Connection {
 	 */
 	generateSvgPath() {
 		if (!this.initialised()) return ""
-		const start = { x: Connection.connectorRadius, y: Connection.connectorRadius }
-		if (this.startPoint.x < this.endPoint.x) {
-			start.x = this.getWidth() + Connection.connectorRadius
-		}
-		if (this.startPoint.y < this.endPoint.y) {
-			start.y = this.getHeight() + Connection.connectorRadius
-		}
 
-		const end = { x: Connection.connectorRadius, y: Connection.connectorRadius }
-		if (this.startPoint.x > this.endPoint.x) {
-			end.x = this.getWidth() + Connection.connectorRadius
-		}
-
-		if (this.startPoint.y > this.endPoint.y) {
-			end.y = this.getHeight() + Connection.connectorRadius
-		}
-
-
-		const diffX = Math.abs(end.x - start.x)
+		const diffX = Math.abs(this.startPoint.x - this.endPoint.x)
 
 		const controlPoint1 = {
-			x: start.x + diffX * 0.5,
-			y: start.y
+			x: this.endPoint.x + diffX * 0.5,
+			y: this.endPoint.y
 		}
 		
 		const controlPoint2 = {
-			x: end.x - diffX * 0.5, 
-			y: end.y
+			x: this.startPoint.x - diffX * 0.5, 
+			y: this.startPoint.y
 		}
 		
 		const controlPoint3 = {
-			x: end.x,
-			y: end.y
+			x: this.startPoint.x,
+			y: this.startPoint.y
 		}
 
 		const controlPoint4 = {
-			x: start.x + diffX * 0.1,
-			y: start.y
+			x: this.endPoint.x + diffX * 0.1,
+			y: this.endPoint.y
 		}
 
 		return `
-			M ${start.x} ${start.y} 
+			M ${this.endPoint.x} ${this.endPoint.y} 
 			C ${controlPoint1.x} ${controlPoint1.y}, 
 			  ${controlPoint2.x} ${controlPoint2.y},
 			  ${controlPoint3.x} ${controlPoint3.y},
 			  ${controlPoint4.x} ${controlPoint4.y},
-			  ${end.x} ${end.y}
+			  ${this.startPoint.x} ${this.startPoint.y}
 		`
-
-
 	}
 
 	getSvgPath() {

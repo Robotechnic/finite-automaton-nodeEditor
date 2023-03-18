@@ -1,8 +1,7 @@
 <script lang="ts">
 	import { currentConnection } from "../stores/connectionStore"
-	import { relativeMousePosition } from "../stores/positions"
+	import { originPosition, relativeMousePosition } from "../stores/positions"
 	import { Connection } from "./connection"
-	import ConnectorLine from "./ConnectorLine.svelte"
 	import { transparentImage } from "../utils/transparentImage"
 	import type { node } from "../utils/types"
 
@@ -33,8 +32,8 @@
 		if (display === null) return
 		const rect = display.getBoundingClientRect()
 		return {
-			x: rect.x + rect.width / 2,
-			y: rect.y + rect.height / 2,
+			x: rect.x + rect.width / 2 - $originPosition.x,
+			y: rect.y + rect.height / 2 - $originPosition.y,
 		}
 	}
 
@@ -79,15 +78,15 @@
 
 		$currentConnection.update(
 			{
-				x: pos.x,
-				y: pos.y,
+				x: pos.x - $originPosition.x,
+				y: pos.y - $originPosition.y,
 			},
 			position === "right"
 		)
 		$currentConnection.update(
 			{
-				x: pos.x,
-				y: pos.y,
+				x: pos.x - $originPosition.x,
+				y: pos.y - $originPosition.y,
 			},
 			position === "left"
 		)
@@ -136,9 +135,7 @@
 	on:dragover|preventDefault
 	on:drop={newConnection}
 >
-	{#if position === "right"}
-		<ConnectorLine bind:connection={connection[1]} />
-	{/if}
+&nbsp;
 </div>
 
 <style lang="scss">
