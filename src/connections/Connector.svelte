@@ -47,10 +47,10 @@
 		if (!pos) return
 		if (position === "right") {
 			if (connection === null) return
-			connection[1].update(pos, true)
+			connection[1].update(pos, false)
 		} else {
 			inputConnections.forEach((c) => {
-				c.update(pos, false)
+				c.update(pos, true)
 			})
 		}
 	}
@@ -93,9 +93,9 @@
 		return false
 	}
 
-	function newEndPos(e : DragEvent) {
+	function newEndPos() {
 		if ($currentConnection === null) return
-		$currentConnection.update($relativeMousePosition, position === "left")
+		$currentConnection.mousePos($relativeMousePosition)
 	}
 
 	function newConnection() {

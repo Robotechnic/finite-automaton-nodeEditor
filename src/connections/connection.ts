@@ -122,35 +122,35 @@ export class Connection {
 	generateSvgPath() {
 		if (!this.initialised()) return ""
 
-		const diffX = Math.abs(this.startPoint.x - this.endPoint.x)
+		const diffX = Math.abs(this.endPoint.x - this.startPoint.x)
 
 		const controlPoint1 = {
-			x: this.endPoint.x + diffX * 0.5,
-			y: this.endPoint.y
+			x: this.startPoint.x + diffX * 0.5,
+			y: this.startPoint.y
 		}
 		
 		const controlPoint2 = {
-			x: this.startPoint.x - diffX * 0.5, 
-			y: this.startPoint.y
+			x: this.endPoint.x - diffX * 0.5, 
+			y: this.endPoint.y
 		}
 		
 		const controlPoint3 = {
-			x: this.startPoint.x,
-			y: this.startPoint.y
-		}
-
-		const controlPoint4 = {
-			x: this.endPoint.x + diffX * 0.1,
+			x: this.endPoint.x,
 			y: this.endPoint.y
 		}
 
+		const controlPoint4 = {
+			x: this.startPoint.x + diffX * 0.1,
+			y: this.startPoint.y
+		}
+
 		return `
-			M ${this.endPoint.x} ${this.endPoint.y} 
+			M ${this.startPoint.x} ${this.startPoint.y} 
 			C ${controlPoint1.x} ${controlPoint1.y}, 
 			  ${controlPoint2.x} ${controlPoint2.y},
 			  ${controlPoint3.x} ${controlPoint3.y},
 			  ${controlPoint4.x} ${controlPoint4.y},
-			  ${this.startPoint.x} ${this.startPoint.y}
+			  ${this.endPoint.x} ${this.endPoint.y}
 		`
 	}
 

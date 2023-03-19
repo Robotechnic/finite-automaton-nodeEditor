@@ -69,6 +69,12 @@
 			$currentConnection = null
 		}
 	}
+
+	function toJSON() {
+		const json = nodeStore.toJSON()
+		console.log(json)
+		return json
+	}
 </script>
 
 <svelte:window
@@ -83,9 +89,10 @@
 	class:active
 >
 	<button on:click={createNewState}> New State </button>
+	<button on:click={toJSON}> Export </button>
 	<Moovable 
 		bind:this={moovableElement}
-		bind:pos={$originPosition}	
+		bind:pos={$originPosition}
 	>
 		{#each $nodeStore as value}
 			<State bind:value />
