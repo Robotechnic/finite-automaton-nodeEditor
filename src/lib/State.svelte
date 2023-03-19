@@ -165,6 +165,7 @@
 		width:0;
 		height:0;
 		top:-80px;
+		z-index: -1;
 		overflow: visible !important;
 	}
 
