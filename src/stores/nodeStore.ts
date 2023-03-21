@@ -1,14 +1,8 @@
 import { writable, get } from "svelte/store"
 import  { Connection } from "../connections/connection"
-import type { node } from "../utils/types"
+import type { node, nodeJSON } from "../utils/types"
 import { originPosition } from "./positions"
 
-type nodeJSON = {
-	name: string,
-	entryNode: boolean,
-	events: {name: string, action : string | null}[],
-	position: { x: number, y: number }
-}
 
 function createStateStore() {
 	const baseStore = writable<node[]>([])
@@ -31,7 +25,7 @@ function createStateStore() {
 		set([])
 	}
 
-	function coputeTheoreticalHeight(node : node) {
+	function computeTheoreticalHeight(node : node) {
 		return 207.5 + 29 * node.events.length
 	}
 
@@ -44,23 +38,27 @@ function createStateStore() {
 		return width + eventWidth
 	}
 
+	function createState(node: node) {
+		let created = false
+		update(nodes => {
+			if (!hasState(node.name)) {
+				created = true
+				nodes.push(node)
+			}
+			return nodes
+		})
+		return created
+	}
+
 	return {
 		subscribe,
 		set,
 		update,
 		hasState,
 		clearStore,
-		createState(node: node) {
-			let created = false
-			update(nodes => {
-				if (!hasState(node.name)) {
-					created = true
-					nodes.push(node)
-				}
-				return nodes
-			})
-			return created
-		},
+		computeTheoreticalHeight,
+		computeTheoreticalWidth,
+		createState,
 		deleteStateByName(name: string) {
 			update(nodes => {
 				return nodes.filter(node => node.name !== name)
@@ -141,9 +139,9 @@ function createStateStore() {
 					inputConnections: []
 				}
 				nodeMap.set(node.name, node)
-				this.createState(node)
+				createState(node)
 				averagePos.x += node.position.x + computeTheoreticalWidth(node) / 2
-				averagePos.y += node.position.y + coputeTheoreticalHeight(node) / 2
+				averagePos.y += node.position.y + computeTheoreticalHeight(node) / 2
 			})
 
 			

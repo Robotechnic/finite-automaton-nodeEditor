@@ -1,90 +1,24 @@
 <script lang="ts">
+	import NavBar from './NavBar.svelte'
 	import State from "./State.svelte"
 	import { activeState, nodeStore } from "../stores/nodeStore"
 	import { currentConnection } from "../stores/connectionStore"
 	import { mousePosition, originPosition, relativeMousePosition } from "../stores/positions"
 	import Moovable from "../utils/Moovable.svelte"
-	import ImageButton from "../utils/imageButton.svelte"
-	import { onDestroy, onMount } from "svelte"
+	import { parseJSONFile } from '../utils/parseJSON'
 
-	let contener: HTMLElement | null = null
 	let moovableElement: Moovable | null = null
 	let active = false
 	let fileOver = false
 
-	const jsonInput = document.createElement("input")
-	jsonInput.type = "file"
-	jsonInput.accept = "application/json"
-
-	function parseJSONFile(file : File) {
-		if (!file) return
-		if (file.type !== "application/json") {
-			alert("File is not a JSON file")
-			return
-		}
-		const reader = new FileReader()
-		reader.onload = (e) => {
-			try {
-				const json = JSON.parse(e.target.result as string)
-				nodeStore.fromJSON(json)
-			} catch (e) {
-				console.error(e)
-				alert("Error parsing JSON file")
-			}
-		}
-		reader.onerror = (e) => {
-			console.error(e)
-			alert("Error parsing JSON file")
-		}
-
-		reader.readAsText(file)
-	}
-
-	function sendDownloadFile(filename: string, mimeType: string, text: string) {
-		const file = new Blob([text], { type: mimeType })
-		const url = URL.createObjectURL(file)
-		const a = document.createElement("a")
-		a.setAttribute("href", url)
-		a.setAttribute("download", filename)
-		a.click()
-	}
-
-	function change(e : InputEvent) {
-		const file = (e.target as HTMLInputElement).files![0]
-		parseJSONFile(file)
-	}
-	
-	onMount(() => {
-		jsonInput.addEventListener("change", change)
-	})
-
-	onDestroy(() => {
-		jsonInput.removeEventListener("change", change)
-	})
-
-	function createNewState() {
-		const panPos = moovableElement!.getPosition()
-		nodeStore.createState({
-			name: "New_State " + $nodeStore.length,
-			entryNode: $nodeStore.length === 0,
-			events: [],
-			position: {
-				x: contener!.clientWidth / 2 - panPos.x,
-				y: contener!.clientHeight / 2 - panPos.y,
-			},
-			inputConnections: []
-		})
-	}
-
 	function mouseUpdate(e) {
-		const panPos = moovableElement!.getPosition()
 		$mousePosition = {
 			x: e.clientX,
 			y: e.clientY,
 		}
 		$relativeMousePosition = {
-			x: e.clientX - panPos.x,
-			y: e.clientY - panPos.y,
+			x: e.clientX - $originPosition.x,
+			y: e.clientY - $originPosition.y,
 		}
 	}
 
@@ -99,11 +33,10 @@
 		}
 
 		if ($currentConnection !== null) {
-			const panPos = moovableElement!.getPosition()
 			$currentConnection.mousePos(
 				{
-					x: e.clientX - panPos.x,
-					y: e.clientY - panPos.y,
+					x: e.clientX - $originPosition.x,
+					y: e.clientY - $originPosition.y,
 				},
 				$currentConnection.display
 			)
@@ -124,19 +57,10 @@
 		}
 	}
 
-	function toJSON() {
-		const json = nodeStore.toJSON()
-		sendDownloadFile("automaton.json", "application/json", JSON.stringify(json))
-	}
-
-	function fromJSON() {
-		jsonInput.click()
-	}
-
 	function fileDrop(e : DragEvent) {
 		fileOver = false
 		const file = e.dataTransfer.files[0]
-		parseJSONFile(file)
+		parseJSONFile(file, nodeStore.fromJSON)
 		return
 	}
 
@@ -147,14 +71,6 @@
 
 	function dragleave(e : DragEvent) {
 		fileOver = false
-	}
-
-	function build() {
-		const automaton = nodeStore.toAutomaton()
-		if (automaton === null) {
-			return
-		}
-		sendDownloadFile("automaton", "text/plain", automaton)
 	}
 </script>
 
@@ -179,31 +95,9 @@
 	on:mousemove={mouseMove}
 	on:mousedown|self={mouseDown}
 	on:mouseup|self={mouseUp}
-	bind:this={contener}
 	class:active
 >
-	<nav class="editor__navbar">
-		<ImageButton
-			src="/add.svg"
-			label="Add State"
-			on:click={createNewState}
-			/>
-		<ImageButton
-			src="/export.svg"
-			label="Save"
-			on:click={toJSON}
-			/>
-		<ImageButton
-			src="/open.svg"
-			label="Load"
-			on:click={fromJSON}
-			/>
-		<ImageButton
-			src="/build.svg"
-			label="Build"
-			on:click={build}
-			/>
-	</nav>
+	<NavBar />
 	<Moovable 
 		bind:this={moovableElement}
 		bind:position={$originPosition}
@@ -246,20 +140,6 @@
 
 		&.active {
 			cursor: grabbing;
-		}
-
-		&__navbar {
-			position: absolute;
-			top: 0;
-			bottom: 0;
-			display: flex;
-			flex-direction: column;
-			justify-content: center;
-			left: 0;
-			width: min-content;
-			padding: 1em;
-			gap: .5em;
-			z-index: 500;
 		}
 	}
 </style>
