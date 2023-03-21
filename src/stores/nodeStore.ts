@@ -1,6 +1,7 @@
 import { writable, get } from "svelte/store"
 import  { Connection } from "../connections/connection"
 import type { node } from "../utils/types"
+import { originPosition } from "./positions"
 
 type nodeJSON = {
 	name: string,
@@ -40,7 +41,22 @@ function createStateStore() {
 		},
 		deleteState(node: node) {
 			update(nodes => {
-				return nodes.filter(n => n !== node)
+				return nodes.filter(n => {
+					if (n !== node) return true
+					// Remove all connections from this node
+					n.inputConnections.forEach(connection => {
+						connection.setEndNode(null)
+						connection.display = false
+					})
+					n.events.forEach(event => {
+						if (event[1] !== null) {
+							event[1].setEndNode(null)
+							event[1].setStartNode(null)
+							event[1].display = false
+						}
+					})
+					return false
+				})
 			})
 		},
 		toJSON(): nodeJSON[] {
@@ -59,7 +75,9 @@ function createStateStore() {
 			})
 		},
 		fromJSON(json: nodeJSON[]) {
+			set([])
 			const nodeMap = new Map<string, node>()
+			const averagePos = { x: 0, y: 0 }
 			// Create all nodes
 			json.forEach((state: nodeJSON) => {
 				const node : node = {
@@ -73,6 +91,8 @@ function createStateStore() {
 				}
 				nodeMap.set(node.name, node)
 				this.createState(node)
+				averagePos.x += node.position.x
+				averagePos.y += node.position.y
 			})
 
 			// Set all actions
@@ -86,6 +106,11 @@ function createStateStore() {
 					}
 				}
 			})
+
+			// Set center pan pos
+			averagePos.x /= json.length
+			averagePos.y /= json.length
+			originPosition.set(averagePos)
 		}
 
 	}

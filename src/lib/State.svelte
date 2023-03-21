@@ -1,6 +1,6 @@
 <script lang="ts">
 	import trash from "../assets/trash.svg"
-	import { activeState } from "../stores/nodeStore"
+	import { activeState, nodeStore } from "../stores/nodeStore"
 	import type { node } from "../utils/types"
 	import Moovable from "../utils/Moovable.svelte"
 	import Connector from "../connections/Connector.svelte"
@@ -9,8 +9,6 @@
 	import ConnectorLine from "../connections/ConnectorLine.svelte"
 
 	let moovableElement: Moovable | null = null
-	let inputConnector: Connector | null = null
-
 	export let value: node
 
 	function inputValidator(value: string): [boolean, string] {
@@ -57,15 +55,22 @@
 	}
 
 	function deleteEvent(i: number) {
-		value.events[i][1].setEndNode(null, null)
+		value.events[i][1].setEndNode(null)
 		// delete the i-th event wihout breaking references of the i+n-th events
 		value.events = value.events.slice(0, i).concat(value.events.slice(i + 1));
+	}
+
+	function deleteNode() {
+		const continueDeletion = confirm("Are you sure you want to delete this node?")
+		if (continueDeletion) {
+			nodeStore.deleteState(value)
+		}
 	}
 </script>
 
 <Moovable
 	bind:this={moovableElement}
-	bind:pos={value.position}
+	bind:position={value.position}
 >
 	<div
 		on:mousedown|self={mouseDown}
@@ -75,8 +80,6 @@
 	>
 		<Connector
 			position="left"
-			bind:this={inputConnector}
-			bind:self={inputConnector}
 			eventName="input"
 			parentNode={value}
 		/>
@@ -87,6 +90,12 @@
 				{value.name}
 			{/if}
 		</h2>
+		<button
+			class="node__delete"
+			on:click={deleteNode}
+		>
+			Delete this node
+		</button>
 		<div class="node_entryNode">
 			<label for="entryNode">Entry node:</label>
 			<input
@@ -174,6 +183,10 @@
 
 		cursor: pointer;
 
+		button {
+			cursor: pointer;
+		}
+
 		h2 {
 			margin: 0;
 			text-align: center;
@@ -187,6 +200,11 @@
 
 		label {
 			@include disableUserInteraction;
+		}
+
+		&__delete {
+			grid-area: delete;
+			color: red;
 		}
 
 		&__outputs {
@@ -239,16 +257,17 @@
 		padding: 10px calc(var(--connector-radius) * 1.5);
 		color: #fff;
 		border: solid 1px #ccc;
-		background: #9c9c9c;
+		background: #9f9f9fe6;
 		border-radius: 10px;
 		width: min-content;
 		height: min-content;
 
 		display: grid;
 		grid-template:
-			"header outputs"
-			"entryNode outputs"
-			"name outputs"
+			"header     outputs"
+			"delete     outputs"
+			"entryNode  outputs"
+			"name       outputs"
 			"outputsDef outputs";
 	}
 </style>

@@ -73,7 +73,7 @@
 
 	function toJSON() {
 		const json = nodeStore.toJSON()
-		console.log(JSON.stringify(json, null, 2))
+		console.log(JSON.stringify(json))
 		return json
 	}
 
@@ -101,7 +101,7 @@
 	<button on:click={fromJSON}> Import </button>
 	<Moovable 
 		bind:this={moovableElement}
-		bind:pos={$originPosition}
+		bind:position={$originPosition}
 	>
 		{#each $nodeStore as value}
 			<State bind:value />

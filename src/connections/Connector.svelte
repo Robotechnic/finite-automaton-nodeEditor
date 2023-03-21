@@ -12,7 +12,6 @@
 	export let parentNode: node
 	export let connection: [string, Connection] = null
 	export let position: positionType
-	export let self = null
 
 	export function addConnection(connection: Connection) {
 		parentNode.events.map((c) => {
@@ -63,29 +62,29 @@
 				console.log("Init left connection", pos)
 			} else {
 				$currentConnection = parentNode.inputConnections[parentNode.inputConnections.length - 1]
-				$currentConnection.setEndNode(null, self)
+				$currentConnection.setEndNode(null)
 				console.log("Break a right connection", pos)
 			}
 			return false
 		} else {
 			$currentConnection = connection[1]
 			$currentConnection.setStartNode(parentNode)
-			$currentConnection.setEndNode(null, self)
+			$currentConnection.setEndNode(null)
 			console.log("Init right connection", pos)
 		}
 		$currentConnection.display = true
 
 		$currentConnection.update(
 			{
-				x: pos.x - $originPosition.x,
-				y: pos.y - $originPosition.y,
+				x: pos.x,
+				y: pos.y,
 			},
 			true
 		)
 		$currentConnection.update(
 			{
-				x: pos.x - $originPosition.x,
-				y: pos.y - $originPosition.y,
+				x: pos.x,
+				y: pos.y,
 			},
 			false
 		)
@@ -101,7 +100,7 @@
 		if ($currentConnection === null) return
 		if ($currentConnection.getStartNode() !== null && position === "left") {
 			console.log("Connection successfully created right to left")
-			$currentConnection.setEndNode(parentNode, self)
+			$currentConnection.setEndNode(parentNode)
 			parentNode.inputConnections.push($currentConnection)
 		} else if (
 			$currentConnection.getEndNode() !== null &&

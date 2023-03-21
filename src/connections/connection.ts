@@ -12,15 +12,12 @@ export class Connection {
 	private startNode: node
 	private endNode: node
 
-	private endConnector: Connector
-
 	static connectorRadius = 10
 
 
 	constructor(startNode: node, endNode: node, display: boolean = null) {
 		this.startNode = startNode
 		this.endNode = endNode
-		this.endConnector = null
 		this._display.set(display ?? (startNode !== null && endNode !== null))
 		this._startPos = writable({ x: 0, y: 0 })
 		this._endPos = writable({ x: 0, y: 0 })
@@ -51,16 +48,13 @@ export class Connection {
 		this.startNode = startNode
 	}
 
-	setEndNode(endNode: node, endConnector: Connector) {
-		if (this.endConnector !== null && endNode === null) {
-			this.endConnector.removeInputConnection(this)
+	setEndNode(endNode: node) {
+		if (this.endNode !== null && endNode === null) {
+			this.endNode.inputConnections = this.endNode.inputConnections.filter(
+				(connection) => connection !== this
+			)
 		}
 		this.endNode = endNode
-		this.endConnector = endConnector
-	}
-
-	getEndConnector() {
-		return this.endConnector
 	}
 
 	getStartNode() {

@@ -1,5 +1,4 @@
 import type { Connection } from "../connections/connection"
-import type Connector from "../connections/Connector.svelte"
 
 export type point = {
 	x: number
