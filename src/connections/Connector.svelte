@@ -12,6 +12,7 @@
 	export let parentNode: node
 	export let connection: [string, Connection] = null
 	export let position: positionType
+	let active = false
 
 	export function addConnection(connection: Connection) {
 		parentNode.events.map((c) => {
@@ -101,6 +102,7 @@
 		if ($currentConnection.getStartNode() !== null && position === "left") {
 			console.log("Connection successfully created right to left")
 			$currentConnection.setEndNode(parentNode)
+			$currentConnection.update(getPos(), true)
 			parentNode.inputConnections.push($currentConnection)
 		} else if (
 			$currentConnection.getEndNode() !== null &&
@@ -108,11 +110,13 @@
 		) {
 			console.log("Connection successfully created left to right")
 			$currentConnection.setStartNode(parentNode)
+			$currentConnection.update(getPos(), false)
 		} else {
 			console.log("Connection cancelled")
 			$currentConnection.display = false
 		}
 		$currentConnection = null
+		active = false
 	}
 
 	function cancelConnection () {
@@ -125,12 +129,15 @@
 
 <div
 	class={position}
+	class:active={active}
 	bind:this={display}
 	draggable="true"
 	on:dragend|preventDefault={cancelConnection}
 	on:drag={newEndPos}
 	on:dragstart={initConnection}
-	on:dragover|preventDefault
+	on:dragover|preventDefault={() => {active = true}}
+	on:dragleave|preventDefault={() => {active = false}}
+	on:dragenter|preventDefault={() => {active = true}}
 	on:drop={newConnection}
 >
 &nbsp;
@@ -149,7 +156,7 @@
 		transition: background-color 0.2s ease-in-out;
 		top: calc(50% - var(--connector-radius));
 
-		&:hover {
+		&:hover, &.active {
 			background-color: #3d3d3d;
 		}
 
