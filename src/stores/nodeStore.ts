@@ -31,6 +31,19 @@ function createStateStore() {
 		set([])
 	}
 
+	function coputeTheoreticalHeight(node : node) {
+		return 207.5 + 29 * node.events.length
+	}
+
+	function computeTheoreticalWidth(node : node) {
+		const width = Math.max(234, node.name.length * 15.80585)
+		let eventWidth = 0
+		node.events.forEach(event => {
+			eventWidth = Math.max(eventWidth, event[0].length * 9.92335)
+		})
+		return width + eventWidth
+	}
+
 	return {
 		subscribe,
 		set,
@@ -75,6 +88,7 @@ function createStateStore() {
 		},
 		toJSON(): nodeJSON[] {
 			return get(baseStore).map(state => {
+				state.name = state.name.slice(0, 20)
 				return {
 					name: state.name,
 					entryNode: state.entryNode,
@@ -105,8 +119,8 @@ function createStateStore() {
 				}
 				nodeMap.set(node.name, node)
 				this.createState(node)
-				averagePos.x += node.position.x
-				averagePos.y += node.position.y
+				averagePos.x += node.position.x + computeTheoreticalWidth(node) / 2
+				averagePos.y += node.position.y + coputeTheoreticalHeight(node) / 2
 			})
 
 			

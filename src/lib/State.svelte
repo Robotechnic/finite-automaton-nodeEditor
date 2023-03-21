@@ -18,6 +18,9 @@
 		if (value.includes(" ")) {
 			return [false, value.replace(" ", "_")]
 		}
+		if (value.length > 20) {
+			return [false, value.slice(0, 20)]
+		}
 		return [true, value]
 	}
 
@@ -29,6 +32,15 @@
 		if (!isValid && newValue.length > 0) {
 			value.name = newValue
 		}
+	}
+
+	$: {
+		value.events.forEach((event) => {
+			const [isValid, newValue] = inputValidator(event[0])
+			if (!isValid && newValue.length > 0) {
+				event[0] = newValue
+			}
+		})
 	}
 
 	function mouseDown(e) {
