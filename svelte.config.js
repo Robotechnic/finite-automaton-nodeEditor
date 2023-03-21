@@ -1,8 +1,12 @@
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte'
 
 export default {
-  // Consult https://svelte.dev/docs#compile-time-svelte-preprocess
-  // for more information about preprocessors
-  preprocess: vitePreprocess(),
-  customElements: true
+  	// Consult https://svelte.dev/docs#compile-time-svelte-preprocess
+  	// for more information about preprocessors
+  	preprocess: vitePreprocess(),
+  	customElements: true,
+	paths: {
+		assets: "/finite-automaton-nodeEditor/assets",
+		base: "/finite-automaton-nodeEditor",
+	}
 }

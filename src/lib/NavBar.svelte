@@ -75,22 +75,22 @@
 
 <nav class="editor__navbar">
 	<ImageButton
-		src="/add.svg"
+		src="add.svg"
 		label="Add State"
 		on:click={createNewState}
 	/>
 	<ImageButton
-		src="/export.svg"
+		src="export.svg"
 		label="Save"
 		on:click={toJSON}
 	/>
 	<ImageButton
-		src="/open.svg"
+		src="open.svg"
 		label="Load"
 		on:click={fromJSON}
 	/>
 	<ImageButton
-		src="/build.svg"
+		src="build.svg"
 		label="Build"
 		on:click={build}
 	/>
