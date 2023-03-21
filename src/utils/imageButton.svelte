@@ -9,6 +9,7 @@
 <button
 	on:click
 	on:keypress
+	title={label}
 >
 	<img src={src} alt={label} />
 </button>

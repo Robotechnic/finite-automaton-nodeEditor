@@ -102,6 +102,29 @@ function createStateStore() {
 				}
 			})
 		},
+		toAutomaton(): string {
+			let automaton = ""
+			let entryNode = ""
+			get(baseStore).forEach(state => {
+				if (state.entryNode) {
+					entryNode += "->" + state.name + "\n"
+				}
+				state.events.forEach(event => {
+					if (event[1] !== null) {
+						automaton += `${state.name}:${event[0]}->${event[1].getEndNode().name}\n`
+					} else {
+						automaton += `${state.name}:${event[0]}->${state.name}\n`
+					}
+				})
+			})
+
+			if (entryNode === "") {
+				alert("There is no entry point for the automaton!")
+				return null
+			}
+
+			return entryNode + automaton
+		},
 		fromJSON(json: nodeJSON[]) {
 			clearStore()
 			const nodeMap = new Map<string, node>()

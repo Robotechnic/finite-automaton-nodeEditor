@@ -40,6 +40,15 @@
 		reader.readAsText(file)
 	}
 
+	function sendDownloadFile(filename: string, mimeType: string, text: string) {
+		const file = new Blob([text], { type: mimeType })
+		const url = URL.createObjectURL(file)
+		const a = document.createElement("a")
+		a.setAttribute("href", url)
+		a.setAttribute("download", filename)
+		a.click()
+	}
+
 	function change(e : InputEvent) {
 		const file = (e.target as HTMLInputElement).files![0]
 		parseJSONFile(file)
@@ -117,12 +126,7 @@
 
 	function toJSON() {
 		const json = nodeStore.toJSON()
-		const jsonFile = new Blob([JSON.stringify(json)], { type: "application/json" })
-		const jsonURL = URL.createObjectURL(jsonFile)
-		const link = document.createElement("a")
-		link.href = jsonURL
-		link.download = "automaton.json"
-		link.click()
+		sendDownloadFile("automaton.json", "application/json", JSON.stringify(json))
 	}
 
 	function fromJSON() {
@@ -143,6 +147,14 @@
 
 	function dragleave(e : DragEvent) {
 		fileOver = false
+	}
+
+	function build() {
+		const automaton = nodeStore.toAutomaton()
+		if (automaton === null) {
+			return
+		}
+		sendDownloadFile("automaton", "text/plain", automaton)
 	}
 </script>
 
@@ -185,6 +197,11 @@
 			src="/open.svg"
 			label="Load"
 			on:click={fromJSON}
+			/>
+		<ImageButton
+			src="/build.svg"
+			label="Build"
+			on:click={build}
 			/>
 	</nav>
 	<Moovable 
