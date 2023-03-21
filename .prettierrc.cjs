@@ -9,7 +9,7 @@ module.exports = {
 	arrowParens: "avoid",
 	plugins: ["prettier-plugin-svelte"],
 	svelteBracketNewLine: true,
-	svelteSortOrder: "scripts-markup-styles",
+	svelteSortOrder: "options-scripts-markup-styles",
 	svelteStrictMode: false,
 	svelteIndentScriptAndStyle: true,
 	printWidth: 80,

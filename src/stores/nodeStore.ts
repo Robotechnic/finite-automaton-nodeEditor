@@ -133,6 +133,7 @@ function createStateStore() {
 				const node: node = {
 					name: state.name,
 					entryNode: state.entryNode,
+					// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 					events: state.events.map(event => {
 						return [event.name, null]
 					}),
