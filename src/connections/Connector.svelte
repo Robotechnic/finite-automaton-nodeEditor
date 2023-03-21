@@ -15,7 +15,7 @@
 	let active = false
 
 	export function addConnection(connection: Connection) {
-		parentNode.events.map((c) => {
+		parentNode.events.map(c => {
 			if (c[0] === eventName) {
 				c[1] = connection
 			}
@@ -24,7 +24,9 @@
 	}
 
 	export function removeInputConnection(connection: Connection) {
-		parentNode.inputConnections = parentNode.inputConnections.filter(c => c !== connection)
+		parentNode.inputConnections = parentNode.inputConnections.filter(
+			c => c !== connection
+		)
 	}
 
 	export function getPos() {
@@ -48,13 +50,13 @@
 			if (connection === null || connection[1] === null) return
 			connection[1].update(pos, false)
 		} else {
-			parentNode.inputConnections.forEach((c) => {
+			parentNode.inputConnections.forEach(c => {
 				c.update(pos, true)
 			})
 		}
 	}
 
-	function initConnection(e : DragEvent) {
+	function initConnection(e: DragEvent) {
 		e.dataTransfer.setDragImage(transparentImage, 0, 0)
 		const pos = getPos()
 		if (position === "left") {
@@ -62,7 +64,10 @@
 				$currentConnection = new Connection(null, parentNode)
 				console.log("Init left connection", pos)
 			} else {
-				$currentConnection = parentNode.inputConnections[parentNode.inputConnections.length - 1]
+				$currentConnection =
+					parentNode.inputConnections[
+						parentNode.inputConnections.length - 1
+					]
 				$currentConnection.setEndNode(null)
 				console.log("Break a right connection", pos)
 			}
@@ -119,7 +124,7 @@
 		active = false
 	}
 
-	function cancelConnection () {
+	function cancelConnection() {
 		if ($currentConnection === null) return
 		console.log("Connection cancelled")
 		$currentConnection.display = false
@@ -129,18 +134,24 @@
 
 <div
 	class={position}
-	class:active={active}
+	class:active
 	bind:this={display}
 	draggable="true"
 	on:dragend|preventDefault={cancelConnection}
 	on:drag={newEndPos}
 	on:dragstart={initConnection}
-	on:dragover|preventDefault={() => {active = true}}
-	on:dragleave|preventDefault={() => {active = false}}
-	on:dragenter|preventDefault={() => {active = true}}
+	on:dragover|preventDefault={() => {
+		active = true
+	}}
+	on:dragleave|preventDefault={() => {
+		active = false
+	}}
+	on:dragenter|preventDefault={() => {
+		active = true
+	}}
 	on:drop={newConnection}
 >
-&nbsp;
+	&nbsp;
 </div>
 
 <style lang="scss">
@@ -156,7 +167,8 @@
 		transition: background-color 0.2s ease-in-out;
 		top: calc(50% - var(--connector-radius));
 
-		&:hover, &.active {
+		&:hover,
+		&.active {
 			background-color: #3d3d3d;
 		}
 

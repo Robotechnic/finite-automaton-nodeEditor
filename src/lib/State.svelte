@@ -25,7 +25,9 @@
 	}
 
 	let entryNodeGroup = ""
-	$: value.entryNode = entryNodeGroup === "entryNoode-" + value.name
+	$: {
+		value.entryNode = entryNodeGroup === "entryNoode-" + value.name
+	}
 
 	$: {
 		const [isValid, newValue] = inputValidator(value.name)
@@ -35,7 +37,7 @@
 	}
 
 	$: {
-		value.events.forEach((event) => {
+		value.events.forEach(event => {
 			const [isValid, newValue] = inputValidator(event[0])
 			if (!isValid && newValue.length > 0) {
 				event[0] = newValue
@@ -69,11 +71,15 @@
 	function deleteEvent(i: number) {
 		value.events[i][1].setEndNode(null)
 		// delete the i-th event wihout breaking references of the i+n-th events
-		value.events = value.events.slice(0, i).concat(value.events.slice(i + 1));
+		value.events = value.events
+			.slice(0, i)
+			.concat(value.events.slice(i + 1))
 	}
 
 	function deleteNode() {
-		const continueDeletion = confirm("Are you sure you want to delete this node?")
+		const continueDeletion = confirm(
+			"Are you sure you want to delete this node?"
+		)
 		if (continueDeletion) {
 			nodeStore.deleteState(value)
 		}
@@ -140,7 +146,10 @@
 						id="outputs"
 					/>
 					<button on:click={() => deleteEvent(i)}>
-						<img src={trash} alt="trash" />
+						<img
+							src={trash}
+							alt="trash"
+						/>
 					</button>
 				</div>
 			{/each}
@@ -165,9 +174,7 @@
 </Moovable>
 <svg>
 	{#each value.events as event}
-		<ConnectorLine
-			connection={event[1]}
-		/>
+		<ConnectorLine connection={event[1]} />
 	{/each}
 </svg>
 
@@ -183,9 +190,9 @@
 
 	svg {
 		position: absolute;
-		width:0;
-		height:0;
-		top:-80px;
+		width: 0;
+		height: 0;
+		top: -80px;
 		z-index: -1;
 		overflow: visible !important;
 	}

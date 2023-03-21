@@ -1,8 +1,7 @@
 import { writable, get } from "svelte/store"
-import  { Connection } from "../connections/connection"
+import { Connection } from "../connections/connection"
 import type { node, nodeJSON } from "../utils/types"
 import { originPosition } from "./positions"
-
 
 function createStateStore() {
 	const baseStore = writable<node[]>([])
@@ -25,11 +24,11 @@ function createStateStore() {
 		set([])
 	}
 
-	function computeTheoreticalHeight(node : node) {
+	function computeTheoreticalHeight(node: node) {
 		return 207.5 + 29 * node.events.length
 	}
 
-	function computeTheoreticalWidth(node : node) {
+	function computeTheoreticalWidth(node: node) {
 		const width = Math.max(234, node.name.length * 15.80585)
 		let eventWidth = 0
 		node.events.forEach(event => {
@@ -90,10 +89,10 @@ function createStateStore() {
 				return {
 					name: state.name,
 					entryNode: state.entryNode,
-					events: state.events.map((event) => {
+					events: state.events.map(event => {
 						return {
 							name: event[0],
-							action: event[1].getEndNode()?.name ?? null
+							action: event[1].getEndNode()?.name ?? null,
 						}
 					}),
 					position: state.position,
@@ -109,7 +108,9 @@ function createStateStore() {
 				}
 				state.events.forEach(event => {
 					if (event[1] !== null) {
-						automaton += `${state.name}:${event[0]}->${event[1].getEndNode().name}\n`
+						automaton += `${state.name}:${event[0]}->${
+							event[1].getEndNode().name
+						}\n`
 					} else {
 						automaton += `${state.name}:${event[0]}->${state.name}\n`
 					}
@@ -129,22 +130,22 @@ function createStateStore() {
 			const averagePos = { x: 0, y: 0 }
 			// Create all nodes
 			json.forEach((state: nodeJSON) => {
-				const node : node = {
+				const node: node = {
 					name: state.name,
 					entryNode: state.entryNode,
-					events: state.events.map((event) => {
+					events: state.events.map(event => {
 						return [event.name, null]
 					}),
 					position: state.position,
-					inputConnections: []
+					inputConnections: [],
 				}
 				nodeMap.set(node.name, node)
 				createState(node)
-				averagePos.x += node.position.x + computeTheoreticalWidth(node) / 2
-				averagePos.y += node.position.y + computeTheoreticalHeight(node) / 2
+				averagePos.x +=
+					node.position.x + computeTheoreticalWidth(node) / 2
+				averagePos.y +=
+					node.position.y + computeTheoreticalHeight(node) / 2
 			})
-
-			
 
 			// Set all actions
 			json.forEach((state: nodeJSON) => {
@@ -156,8 +157,8 @@ function createStateStore() {
 						end.inputConnections.push(start.events[i][1])
 					}
 				}
-			})			
-			
+			})
+
 			// get the offset from 0 0 to get it centered
 			averagePos.x /= json.length
 			averagePos.y /= json.length
@@ -166,8 +167,7 @@ function createStateStore() {
 			averagePos.x += window.innerWidth / 2
 			averagePos.y += window.innerHeight / 2
 			originPosition.set(averagePos)
-		}
-
+		},
 	}
 }
 

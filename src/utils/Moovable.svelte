@@ -35,7 +35,10 @@
 	}
 </script>
 
-<div class:active style="--pos-x: {position.x}px; --pos-y: {position.y}px;">
+<div
+	class:active
+	style="--pos-x: {position.x}px; --pos-y: {position.y}px;"
+>
 	<slot />
 </div>
 

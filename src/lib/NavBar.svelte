@@ -9,7 +9,11 @@
 	jsonInput.type = "file"
 	jsonInput.accept = "application/json"
 
-	function sendDownloadFile(filename: string, mimeType: string, text: string) {
+	function sendDownloadFile(
+		filename: string,
+		mimeType: string,
+		text: string
+	) {
 		const file = new Blob([text], { type: mimeType })
 		const url = URL.createObjectURL(file)
 		const a = document.createElement("a")
@@ -18,11 +22,11 @@
 		a.click()
 	}
 
-	function change(e : InputEvent) {
+	function change(e: InputEvent) {
 		const file = (e.target as HTMLInputElement).files![0]
 		parseJSONFile(file, nodeStore.fromJSON)
 	}
-	
+
 	onMount(() => {
 		jsonInput.addEventListener("change", change)
 	})
@@ -40,7 +44,7 @@
 				x: window.innerWidth / 2 - $originPosition.x,
 				y: window.innerHeight / 2 - $originPosition.y,
 			},
-			inputConnections: []
+			inputConnections: [],
 		}
 		node.position.x -= nodeStore.computeTheoreticalWidth(node) / 2
 		node.position.y -= nodeStore.computeTheoreticalHeight(node) / 2
@@ -49,7 +53,11 @@
 
 	function toJSON() {
 		const json = nodeStore.toJSON()
-		sendDownloadFile("automaton.json", "application/json", JSON.stringify(json))
+		sendDownloadFile(
+			"automaton.json",
+			"application/json",
+			JSON.stringify(json)
+		)
 	}
 
 	function fromJSON() {
@@ -66,27 +74,27 @@
 </script>
 
 <nav class="editor__navbar">
-		<ImageButton
-			src="/add.svg"
-			label="Add State"
-			on:click={createNewState}
-			/>
-		<ImageButton
-			src="/export.svg"
-			label="Save"
-			on:click={toJSON}
-			/>
-		<ImageButton
-			src="/open.svg"
-			label="Load"
-			on:click={fromJSON}
-			/>
-		<ImageButton
-			src="/build.svg"
-			label="Build"
-			on:click={build}
-			/>
-	</nav>
+	<ImageButton
+		src="/add.svg"
+		label="Add State"
+		on:click={createNewState}
+	/>
+	<ImageButton
+		src="/export.svg"
+		label="Save"
+		on:click={toJSON}
+	/>
+	<ImageButton
+		src="/open.svg"
+		label="Load"
+		on:click={fromJSON}
+	/>
+	<ImageButton
+		src="/build.svg"
+		label="Build"
+		on:click={build}
+	/>
+</nav>
 
 <style lang="scss">
 	.editor__navbar {
@@ -99,8 +107,7 @@
 		left: 0;
 		width: min-content;
 		padding: 1em;
-		gap: .5em;
+		gap: 0.5em;
 		z-index: 500;
 	}
 </style>
-

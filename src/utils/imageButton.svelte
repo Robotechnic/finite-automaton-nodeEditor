@@ -1,17 +1,19 @@
+<svelte:options immutable={true} />
+
 <script lang="ts">
 	export let src: string
 	export let label: string
 </script>
 
-<svelte:options
-	immutable={true}
-/>
 <button
 	on:click
 	on:keypress
 	title={label}
 >
-	<img src={src} alt={label} />
+	<img
+		{src}
+		alt={label}
+	/>
 </button>
 
 <style lang="scss">

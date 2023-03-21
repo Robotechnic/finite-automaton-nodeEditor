@@ -14,10 +14,10 @@ export type node = {
 }
 
 export type nodeJSON = {
-	name: string,
-	entryNode: boolean,
-	events: { name: string, action: string | null }[],
-	position: { x: number, y: number }
+	name: string
+	entryNode: boolean
+	events: { name: string; action: string | null }[]
+	position: { x: number; y: number }
 }
 
 export type test = {

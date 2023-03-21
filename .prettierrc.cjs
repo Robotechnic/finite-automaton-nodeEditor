@@ -11,5 +11,7 @@ module.exports = {
 	svelteBracketNewLine: true,
 	svelteSortOrder: "scripts-markup-styles",
 	svelteStrictMode: false,
-	svelteIndentScriptAndStyle: true
+	svelteIndentScriptAndStyle: true,
+	printWidth: 80,
+	singleAttributePerLine: true
 }

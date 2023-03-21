@@ -1,11 +1,15 @@
 <script lang="ts">
-	import NavBar from './NavBar.svelte'
+	import NavBar from "./NavBar.svelte"
 	import State from "./State.svelte"
 	import { activeState, nodeStore } from "../stores/nodeStore"
 	import { currentConnection } from "../stores/connectionStore"
-	import { mousePosition, originPosition, relativeMousePosition } from "../stores/positions"
+	import {
+		mousePosition,
+		originPosition,
+		relativeMousePosition,
+	} from "../stores/positions"
 	import Moovable from "../utils/Moovable.svelte"
-	import { parseJSONFile } from '../utils/parseJSON'
+	import { parseJSONFile } from "../utils/parseJSON"
 
 	let moovableElement: Moovable | null = null
 	let active = false
@@ -57,19 +61,18 @@
 		}
 	}
 
-	function fileDrop(e : DragEvent) {
+	function fileDrop(e: DragEvent) {
 		fileOver = false
 		const file = e.dataTransfer.files[0]
 		parseJSONFile(file, nodeStore.fromJSON)
 		return
 	}
 
-	function dragenter(e : DragEvent) {
-		if (e.dataTransfer.types.includes("Files"))
-			fileOver = true
+	function dragenter(e: DragEvent) {
+		if (e.dataTransfer.types.includes("Files")) fileOver = true
 	}
 
-	function dragleave(e : DragEvent) {
+	function dragleave(e: DragEvent) {
 		fileOver = false
 	}
 </script>
@@ -80,11 +83,11 @@
 	on:dragleave={dragleave}
 	on:dragover={mouseUpdate}
 />
-<section 
+<section
 	class="fileDragOverlay"
 	class:active={fileOver}
 	on:drop|preventDefault|stopPropagation={fileDrop}
-	on:dragover|preventDefault={_ => fileOver = true}
+	on:dragover|preventDefault={_ => (fileOver = true)}
 >
 	<div class="fileDragOverlay__content">
 		<h1>Drop your file here to open it</h1>
@@ -98,7 +101,7 @@
 	class:active
 >
 	<NavBar />
-	<Moovable 
+	<Moovable
 		bind:this={moovableElement}
 		bind:position={$originPosition}
 	>
@@ -115,7 +118,7 @@
 		left: 0;
 		width: 100%;
 		height: 100%;
-		background-color: rgba(0, 0, 0, .5);
+		background-color: rgba(0, 0, 0, 0.5);
 		z-index: 1000;
 		display: none;
 

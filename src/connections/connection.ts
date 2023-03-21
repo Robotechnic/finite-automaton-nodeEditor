@@ -13,7 +13,6 @@ export class Connection {
 
 	static connectorRadius = 10
 
-
 	constructor(startNode: node, endNode: node, display: boolean = null) {
 		this.startNode = startNode
 		this.endNode = endNode
@@ -49,9 +48,10 @@ export class Connection {
 
 	setEndNode(endNode: node) {
 		if (this.endNode !== null && endNode === null) {
-			this.endNode.inputConnections = this.endNode.inputConnections.filter(
-				(connection) => connection !== this
-			)
+			this.endNode.inputConnections =
+				this.endNode.inputConnections.filter(
+					connection => connection !== this
+				)
 		}
 		this.endNode = endNode
 	}
@@ -104,7 +104,6 @@ export class Connection {
 		this._display.set(display)
 	}
 
-
 	/**
 	 * Generate an SVG path in the form of a curve between the start and end point
 	 * it takes into account the direction of the connectors and margins of 5px
@@ -118,22 +117,22 @@ export class Connection {
 
 		const controlPoint1 = {
 			x: this.startPoint.x + diffX * 0.5,
-			y: this.startPoint.y
+			y: this.startPoint.y,
 		}
-		
+
 		const controlPoint2 = {
-			x: this.endPoint.x - diffX * 0.5, 
-			y: this.endPoint.y
+			x: this.endPoint.x - diffX * 0.5,
+			y: this.endPoint.y,
 		}
-		
+
 		const controlPoint3 = {
 			x: this.endPoint.x,
-			y: this.endPoint.y
+			y: this.endPoint.y,
 		}
 
 		const controlPoint4 = {
 			x: this.startPoint.x + diffX * 0.1,
-			y: this.startPoint.y
+			y: this.startPoint.y,
 		}
 
 		return `
