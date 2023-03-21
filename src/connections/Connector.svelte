@@ -45,7 +45,7 @@
 		const pos = getPos()
 		if (!pos) return
 		if (position === "right") {
-			if (connection === null) return
+			if (connection === null || connection[1] === null) return
 			connection[1].update(pos, false)
 		} else {
 			parentNode.inputConnections.forEach((c) => {

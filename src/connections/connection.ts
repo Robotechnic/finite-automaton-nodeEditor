@@ -1,7 +1,6 @@
 import { writable, get } from "svelte/store"
 import type { Writable } from "svelte/store"
 import type { node, point } from "../utils/types"
-import type Connector from "../connections/Connector.svelte"
 
 export class Connection {
 	private _startPos: Writable<point>

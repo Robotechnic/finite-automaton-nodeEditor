@@ -18,11 +18,25 @@ function createStateStore() {
 		return get(baseStore).some(node => node.name === name)
 	}
 
+	function clearStore() {
+		get(baseStore).forEach(node => {
+			node.events.forEach(event => {
+				if (event[1] !== null) {
+					event[1].setEndNode(null)
+					event[1].setStartNode(null)
+					event[1].display = false
+				}
+			})
+		})
+		set([])
+	}
+
 	return {
 		subscribe,
 		set,
 		update,
 		hasState,
+		clearStore,
 		createState(node: node) {
 			let created = false
 			update(nodes => {
@@ -75,7 +89,7 @@ function createStateStore() {
 			})
 		},
 		fromJSON(json: nodeJSON[]) {
-			set([])
+			clearStore()
 			const nodeMap = new Map<string, node>()
 			const averagePos = { x: 0, y: 0 }
 			// Create all nodes
@@ -95,6 +109,8 @@ function createStateStore() {
 				averagePos.y += node.position.y
 			})
 
+			
+
 			// Set all actions
 			json.forEach((state: nodeJSON) => {
 				const start = nodeMap.get(state.name)
@@ -105,11 +121,15 @@ function createStateStore() {
 						end.inputConnections.push(start.events[i][1])
 					}
 				}
-			})
-
-			// Set center pan pos
+			})			
+			
+			// get the offset from 0 0 to get it centered
 			averagePos.x /= json.length
 			averagePos.y /= json.length
+			averagePos.x *= -1
+			averagePos.y *= -1
+			averagePos.x += window.innerWidth / 2
+			averagePos.y += window.innerHeight / 2
 			originPosition.set(averagePos)
 		}
 
