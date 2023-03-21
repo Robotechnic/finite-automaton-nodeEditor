@@ -19,6 +19,7 @@
 				x: contener!.clientWidth / 2 - panPos.x,
 				y: contener!.clientHeight / 2 - panPos.y,
 			},
+			inputConnections: []
 		})
 	}
 
@@ -72,8 +73,15 @@
 
 	function toJSON() {
 		const json = nodeStore.toJSON()
-		console.log(json)
+		console.log(JSON.stringify(json, null, 2))
 		return json
+	}
+
+	function fromJSON() {
+		const jsontext = prompt("Paste JSON here")
+		if (jsontext === null) return
+		const json = JSON.parse(jsontext)
+		nodeStore.fromJSON(json)
 	}
 </script>
 
@@ -90,6 +98,7 @@
 >
 	<button on:click={createNewState}> New State </button>
 	<button on:click={toJSON}> Export </button>
+	<button on:click={fromJSON}> Import </button>
 	<Moovable 
 		bind:this={moovableElement}
 		bind:pos={$originPosition}

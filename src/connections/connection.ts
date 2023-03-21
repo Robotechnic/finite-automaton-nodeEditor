@@ -108,7 +108,6 @@ export class Connection {
 	}
 
 	set display(display: boolean) {
-		console.log("display", display)
 		this._display.set(display)
 	}
 

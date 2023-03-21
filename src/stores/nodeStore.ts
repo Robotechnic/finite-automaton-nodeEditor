@@ -69,6 +69,7 @@ function createStateStore() {
 						return [event.name, null]
 					}),
 					position: state.position,
+					inputConnections: []
 				}
 				nodeMap.set(node.name, node)
 				this.createState(node)
@@ -81,6 +82,7 @@ function createStateStore() {
 					const end = nodeMap.get(state.events[i].action)
 					if (end !== undefined) {
 						start.events[i][1] = new Connection(start, end)
+						end.inputConnections.push(start.events[i][1])
 					}
 				}
 			})

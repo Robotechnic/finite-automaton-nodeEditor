@@ -13,7 +13,6 @@
 	export let connection: [string, Connection] = null
 	export let position: positionType
 	export let self = null
-	let inputConnections: Connection[] = []
 
 	export function addConnection(connection: Connection) {
 		parentNode.events.map((c) => {
@@ -25,7 +24,7 @@
 	}
 
 	export function removeInputConnection(connection: Connection) {
-		inputConnections = inputConnections.filter(c => c !== connection)
+		parentNode.inputConnections = parentNode.inputConnections.filter(c => c !== connection)
 	}
 
 	export function getPos() {
@@ -49,7 +48,7 @@
 			if (connection === null) return
 			connection[1].update(pos, false)
 		} else {
-			inputConnections.forEach((c) => {
+			parentNode.inputConnections.forEach((c) => {
 				c.update(pos, true)
 			})
 		}
@@ -59,11 +58,11 @@
 		e.dataTransfer.setDragImage(transparentImage, 0, 0)
 		const pos = getPos()
 		if (position === "left") {
-			if (inputConnections.length == 0) {
+			if (parentNode.inputConnections.length == 0) {
 				$currentConnection = new Connection(null, parentNode)
 				console.log("Init left connection", pos)
 			} else {
-				$currentConnection = inputConnections[inputConnections.length - 1]
+				$currentConnection = parentNode.inputConnections[parentNode.inputConnections.length - 1]
 				$currentConnection.setEndNode(null, self)
 				console.log("Break a right connection", pos)
 			}
@@ -81,14 +80,14 @@
 				x: pos.x - $originPosition.x,
 				y: pos.y - $originPosition.y,
 			},
-			position === "right"
+			true
 		)
 		$currentConnection.update(
 			{
 				x: pos.x - $originPosition.x,
 				y: pos.y - $originPosition.y,
 			},
-			position === "left"
+			false
 		)
 		return false
 	}
@@ -103,7 +102,7 @@
 		if ($currentConnection.getStartNode() !== null && position === "left") {
 			console.log("Connection successfully created right to left")
 			$currentConnection.setEndNode(parentNode, self)
-			inputConnections.push($currentConnection)
+			parentNode.inputConnections.push($currentConnection)
 		} else if (
 			$currentConnection.getEndNode() !== null &&
 			position === "right"
