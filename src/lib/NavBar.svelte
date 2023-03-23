@@ -99,8 +99,6 @@
 <style lang="scss">
 	.editor__navbar {
 		position: absolute;
-		top: 0;
-		bottom: 0;
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
@@ -108,6 +106,8 @@
 		width: min-content;
 		padding: 1em;
 		gap: 0.5em;
-		z-index: 500;
+		z-index: 99999;
+		top: 50%;
+		transform: translateY(-50%);
 	}
 </style>

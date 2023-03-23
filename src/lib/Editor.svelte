@@ -10,6 +10,7 @@
 	} from "../stores/positions"
 	import Moovable from "../utils/Moovable.svelte"
 	import { parseJSONFile } from "../utils/parseJSON"
+	import Tests from "./Tests.svelte"
 
 	let moovableElement: Moovable | null = null
 	let active = false
@@ -101,6 +102,7 @@
 	class:active
 >
 	<NavBar />
+	<Tests display={true}/>
 	<Moovable
 		bind:this={moovableElement}
 		bind:position={$originPosition}

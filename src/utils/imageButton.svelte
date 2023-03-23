@@ -21,7 +21,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		background-color: #9e9e9e;
+		background-color: var(--bacground-gray);
 		border: none;
 		border-radius: 5px;
 		padding: 10px 20px;
@@ -30,7 +30,7 @@
 		transition: all 0.3s ease-in-out;
 		aspect-ratio: 1/1;
 		padding: 10px;
-		border: solid 1px #757575;
+		border: solid 1px var(--primary-color);
 
 		&:hover {
 			background-color: #757575;
