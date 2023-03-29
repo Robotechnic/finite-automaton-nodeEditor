@@ -20,6 +20,7 @@
 	on:dragenter
 	on:dragleave
 	on:dragend
+	on:dragover
 >
 	<span>
 		{value}

@@ -20,6 +20,11 @@ export type nodeJSON = {
 	position: { x: number; y: number }
 }
 
+export type automatonJSON = {
+	automaton: nodeJSON[]
+	tests: test[]
+}
+
 export type test = {
 	input: string[]
 	expectedState: string

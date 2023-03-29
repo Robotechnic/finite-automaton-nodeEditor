@@ -1,7 +1,8 @@
 import { writable, get } from "svelte/store"
 import { Connection } from "../connections/connection"
-import type { node, nodeJSON } from "../utils/types"
+import type { node, nodeJSON, automatonJSON } from "../utils/types"
 import { originPosition } from "./positions"
+import { testStore } from "./tests"
 
 function createStateStore() {
 	const baseStore = writable<node[]>([])
@@ -83,21 +84,24 @@ function createStateStore() {
 				})
 			})
 		},
-		toJSON(): nodeJSON[] {
-			return get(baseStore).map(state => {
-				state.name = state.name.slice(0, 20)
-				return {
-					name: state.name,
-					entryNode: state.entryNode,
-					events: state.events.map(event => {
-						return {
-							name: event[0],
-							action: event[1].getEndNode()?.name ?? null,
-						}
-					}),
-					position: state.position,
-				}
-			})
+		toJSON(): automatonJSON {
+			return {
+				automaton : get(baseStore).map(state => {
+					state.name = state.name.slice(0, 20)
+					return {
+						name: state.name,
+						entryNode: state.entryNode,
+						events: state.events.map(event => {
+							return {
+								name: event[0],
+								action: event[1].getEndNode()?.name ?? null,
+							}
+						}),
+						position: state.position,
+					}
+				}),
+				tests: get(testStore)
+			}
 		},
 		toAutomaton(): string {
 			let automaton = ""
@@ -107,6 +111,7 @@ function createStateStore() {
 					entryNode += "->" + state.name + "\n"
 				}
 				state.events.forEach(event => {
+					console.log(event)
 					if (event[1] !== null) {
 						automaton += `${state.name}:${event[0]}->${
 							event[1].getEndNode().name
@@ -122,14 +127,25 @@ function createStateStore() {
 				return null
 			}
 
+			get(testStore).forEach(test => {
+				automaton += ":"
+				test.input.forEach((event, index) => {
+					automaton += event
+					if (index !== test.input.length - 1) {
+						automaton += ","
+					}
+				})
+				automaton += `->${test.expectedState}\n`
+			})
+
 			return entryNode + automaton
 		},
-		fromJSON(json: nodeJSON[]) {
+		fromJSON(json: automatonJSON) {
 			clearStore()
 			const nodeMap = new Map<string, node>()
 			const averagePos = { x: 0, y: 0 }
 			// Create all nodes
-			json.forEach((state: nodeJSON) => {
+			json.automaton.forEach((state: nodeJSON) => {
 				const node: node = {
 					name: state.name,
 					entryNode: state.entryNode,
@@ -149,7 +165,7 @@ function createStateStore() {
 			})
 
 			// Set all actions
-			json.forEach((state: nodeJSON) => {
+			json.automaton.forEach((state: nodeJSON) => {
 				const start = nodeMap.get(state.name)
 				for (let i = 0; i < state.events.length; i++) {
 					const end = nodeMap.get(state.events[i].action)
@@ -161,13 +177,16 @@ function createStateStore() {
 			})
 
 			// get the offset from 0 0 to get it centered
-			averagePos.x /= json.length
-			averagePos.y /= json.length
+			averagePos.x /= json.automaton.length
+			averagePos.y /= json.automaton.length
 			averagePos.x *= -1
 			averagePos.y *= -1
 			averagePos.x += window.innerWidth / 2
 			averagePos.y += window.innerHeight / 2
 			originPosition.set(averagePos)
+
+			// Set all tests
+			testStore.set(json.tests)
 		},
 	}
 }
