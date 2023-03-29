@@ -45,7 +45,7 @@
 		})
 	}
 
-	function mouseDown(e) {
+	function mouseDown(e: MouseEvent) {
 		activeState.set({
 			isActive: moovableElement.isActive,
 			newMousePos: moovableElement.newMousePos,
@@ -53,8 +53,8 @@
 		moovableElement.mouseDown(e)
 	}
 
-	function mouseUp(e) {
-		moovableElement.mouseUp(e)
+	function mouseUp() {
+		moovableElement.mouseUp()
 		if ($currentConnection) {
 			$currentConnection.display = false
 			$currentConnection = null

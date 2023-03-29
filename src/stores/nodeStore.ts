@@ -86,7 +86,7 @@ function createStateStore() {
 		},
 		toJSON(): automatonJSON {
 			return {
-				automaton : get(baseStore).map(state => {
+				automaton: get(baseStore).map(state => {
 					state.name = state.name.slice(0, 20)
 					return {
 						name: state.name,
@@ -100,7 +100,7 @@ function createStateStore() {
 						position: state.position,
 					}
 				}),
-				tests: get(testStore)
+				tests: get(testStore),
 			}
 		},
 		toAutomaton(): string {

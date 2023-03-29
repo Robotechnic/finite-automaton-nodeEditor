@@ -16,7 +16,7 @@
 	let active = false
 	let fileOver = false
 
-	function mouseUpdate(e) {
+	function mouseUpdate(e: MouseEvent) {
 		$mousePosition = {
 			x: e.clientX,
 			y: e.clientY,
@@ -27,7 +27,7 @@
 		}
 	}
 
-	function mouseMove(e) {
+	function mouseMove(e: MouseEvent) {
 		if ($activeState != null && $activeState.isActive()) {
 			$activeState.newMousePos(e.clientX, e.clientY)
 			return
@@ -48,14 +48,14 @@
 		}
 	}
 
-	function mouseDown(e) {
+	function mouseDown(e: MouseEvent) {
 		active = true
 		moovableElement.mouseDown(e)
 	}
 
-	function mouseUp(e) {
+	function mouseUp() {
 		active = false
-		moovableElement.mouseUp(e)
+		moovableElement.mouseUp()
 		if ($currentConnection !== null) {
 			console.log("connection cancelled")
 			$currentConnection = null
@@ -73,7 +73,7 @@
 		if (e.dataTransfer.types.includes("Files")) fileOver = true
 	}
 
-	function dragleave(e: DragEvent) {
+	function dragleave() {
 		fileOver = false
 	}
 </script>
@@ -102,7 +102,7 @@
 	class:active
 >
 	<NavBar />
-	<Tests display={true}/>
+	<Tests display={true} />
 	<Moovable
 		bind:this={moovableElement}
 		bind:position={$originPosition}

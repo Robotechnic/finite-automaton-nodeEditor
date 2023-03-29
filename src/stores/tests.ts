@@ -1,6 +1,4 @@
-import { writable } from "svelte/store";
-import type { test } from "../utils/types";
+import { writable } from "svelte/store"
+import type { test } from "../utils/types"
 
-
-
-export const testStore = writable<test[]>([]);
+export const testStore = writable<test[]>([])

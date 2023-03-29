@@ -6,7 +6,7 @@
 	export let mouseDelta: point = { x: 0, y: 0 }
 	export let active = false
 
-	export function mouseDown(e) {
+	export function mouseDown(e: MouseEvent) {
 		mouseDelta = {
 			x: e.clientX - position.x,
 			y: e.clientY - position.y,
@@ -30,7 +30,7 @@
 		dispatcher("move", position)
 	}
 
-	export function mouseUp(e) {
+	export function mouseUp() {
 		active = false
 	}
 </script>

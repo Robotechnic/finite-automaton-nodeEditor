@@ -1,8 +1,8 @@
-import type { nodeJSON } from "./types"
+import type { automatonJSON } from "./types"
 
 export function parseJSONFile(
 	file: File,
-	callback: (json: nodeJSON[]) => void
+	callback: (json: automatonJSON) => void
 ) {
 	if (!file) return
 	if (file.type !== "application/json") {
@@ -12,7 +12,7 @@ export function parseJSONFile(
 	const reader = new FileReader()
 	reader.onload = e => {
 		try {
-			const json = JSON.parse(e.target.result as string) as nodeJSON[]
+			const json = JSON.parse(e.target.result as string) as automatonJSON
 			callback(json)
 		} catch (e) {
 			console.error(e)

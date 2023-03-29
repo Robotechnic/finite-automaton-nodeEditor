@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { createEventDispatcher } from "svelte"
 
-
 	export let value: string
 	export let placeholder: string = ""
 
@@ -12,7 +11,7 @@
 	}
 </script>
 
-<div 
+<div
 	class="tag"
 	draggable="true"
 	on:dragstart
@@ -26,16 +25,14 @@
 		{value}
 		<input
 			bind:value
-			placeholder={placeholder}
+			{placeholder}
 			on:keydown
 			on:keyup
 			on:input
 			on:blur
 		/>
 	</span>
-	<button on:click={close}>
-		X
-	</button>
+	<button on:click={close}> X </button>
 </div>
 
 <style lang="scss">
@@ -56,7 +53,8 @@
 			height: min-content;
 		}
 
-		span, input {
+		span,
+		input {
 			padding: 0 5px;
 			box-sizing: border-box;
 			font-size: 16px;
@@ -67,13 +65,13 @@
 			background-color: transparent;
 			color: white;
 			outline: none;
-			position:absolute;
+			position: absolute;
 			border: none;
-			left:0;
-			right:0;
+			left: 0;
+			right: 0;
 			top: 50%;
 			transform: translateY(-50%);
-			width:100%;
+			width: 100%;
 		}
 
 		button {
@@ -82,7 +80,7 @@
 			color: white;
 			outline: none;
 			cursor: pointer;
-			z-index:10;
+			z-index: 10;
 		}
 	}
 </style>

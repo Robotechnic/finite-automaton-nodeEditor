@@ -54,7 +54,7 @@
 				Remove test {i}
 			</button>
 		</div>
-		<hr/>
+		<hr />
 	{/each}
 	<button on:click={createTest}> Create a new test </button>
 </nav>
